@@ -24,20 +24,22 @@ class Task():
         self.recurrence = parse_recurrence(row[3])
         self.mileage = int(row[4])
         self.mileage = None if self.mileage == 0 else self.mileage
-        self.next_date = self.last_date + timedelta(days=self.recurrence) if self.recurrence else None
+
+    def next_date(self, last_date, recurrence):
+        next_date = last_date + timedelta(days=recurrence) if recurrence else None
+        print(f'Next date: {next_date}')
 
 
 def main():
     with open('records.csv', 'r') as f:
         lines = f.readlines()
-    columns = lines[0]
-    rows = list(map(lambda x: x.split(','), lines[1:]))
     tasks = []
     for line in lines[1:]:
         lines = [l.strip() for l in line.split(',')]
         print(lines)
         tasks.append(Task(lines))
     for task in tasks:
+        print(task.next_date(task.last_date, task.recurrence))
         pprint(vars(task))
 
 
