@@ -11,9 +11,11 @@ def parse_recurrence(s):
         return None
     modifier = s[-1]
     time = int(s[:-1])
-    if modifier == 'y':
-        time *= 365
-    return time
+    modifiers = {
+        'y': 365,
+        'w': 7,
+    }
+    return time * modifiers[modifier]
 
 
 class Task():
@@ -26,8 +28,8 @@ class Task():
         self.mileage = None if self.mileage == 0 else self.mileage
 
     def next_date(self, last_date, recurrence):
-        next_date = last_date + timedelta(days=recurrence) if recurrence else None
-        print(f'Next date: {next_date}')
+        return last_date + timedelta(days=recurrence) if recurrence else None
+        
 
 
 def main():
@@ -36,11 +38,13 @@ def main():
     tasks = []
     for line in lines[1:]:
         lines = [l.strip() for l in line.split(',')]
-        print(lines)
+        # print(lines)
         tasks.append(Task(lines))
     for task in tasks:
-        print(task.next_date(task.last_date, task.recurrence))
-        pprint(vars(task))
+        next_date = task.next_date(task.last_date, task.recurrence)
+        if next_date:
+            print(f'Next date for {task.object} {task.name}: {next_date}')
+        # pprint(vars(task))
 
 
 if __name__ == '__main__':
